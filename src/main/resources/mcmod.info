@@ -1,0 +1,16 @@
+[
+{
+  "modid": "BapeGodClient",
+  "name": "BapeClient",
+  "description": "BapeClient",
+  "version": "unspecified",
+  "mcversion": "1.8.9",
+  "url": "www.bapeclient.xyz",
+  "updateUrl": "",
+  "authorList": ["BapeDeveloperTeam"],
+  "credits": "Medit_4 SuperSkidder LoRyu cubk",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

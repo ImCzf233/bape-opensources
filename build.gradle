@@ -1,0 +1,104 @@
+buildscript {
+
+    repositories {
+
+        mavenLocal()
+
+        mavenCentral()
+
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+
+
+        maven {
+            url = "https://plugins.gradle.org/m2"
+        }
+
+        maven {
+            name = "SpongePowered"
+            url = 'https://repo.spongepowered.org/maven'
+        }
+
+        maven {
+            url = "https://jitpack.io/"
+        }
+    }
+
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.10"
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
+    }
+}
+
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "java"
+
+archivesBaseName = "Example"
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+compileJava.options.encoding = 'UTF-8'
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_22"
+    makeObfSourceJar = true
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+jar {
+    manifest {
+        attributes 'Manifest-Version': '1.0'
+        attributes 'Agent-Class': 'mc.bape.TextureFilter'
+    }
+}
+
+apply plugin: "idea"
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
+shadowJar {
+    exclude 'dummyThing'
+    exclude 'LICENSE.txt'
+    classifier = ""
+}
+
+reobf { shadowJar { mappingType = "SEARGE" } }
+tasks.reobfShadowJar.mustRunAfter shadowJar
+
+configurations {
+    external
+    compile.extendsFrom external
+}
+
+build.dependsOn shadowJar
